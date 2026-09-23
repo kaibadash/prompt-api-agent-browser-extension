@@ -1,10 +1,25 @@
 const MAX_SCRIPT_CHARS = 6_000;
 
 function withScriptHint(error: string): string {
+  if (/syntaxerror|missing initializer|unexpected token|unexpected end of input/i.test(error)) {
+    return `${error} Countermeasure: the script is not valid JavaScript. Rewrite the function body. Give every const and let an initial value, and do not include markdown fences or a surrounding function declaration. Then call executePageScript again.`;
+  }
   if (/null \(setting ['"]value['"]\)|setting ['"]value['"]/i.test(error)) {
     return `${error} Countermeasure: querySelector returned null, so there is no element to assign. Call inspectSelector with a selector copied from getPageInfo. Assign value only after the element is not null, then dispatch bubbling input and change events. Do not write querySelector(...).value = ....`;
   }
   return `${error} Countermeasure: change the selector or the DOM operation, confirm the selector with inspectSelector, and run the script again.`;
+}
+
+function scriptSyntaxError(source: string): string | null {
+  try {
+    new Function(source);
+    return null;
+  } catch (cause) {
+    if (!(cause instanceof SyntaxError)) {
+      return null;
+    }
+    return cause.message;
+  }
 }
 
 type PageElement = {
@@ -242,6 +257,7 @@ export async function executePageScript(
   code: string,
 ): Promise<ScriptExecution | PageFailure> {
   const source = code.trim();
+  console.info("executePageScript executing...\n", source);
   if (!source) {
     return { ok: false, error: 'The page script is empty.' };
   }
@@ -257,6 +273,11 @@ export async function executePageScript(
       error:
         'User Scripts are disabled. Ask the user to open chrome://extensions, open this extension\'s details, and turn on Allow User Scripts.',
     };
+  }
+
+  const syntaxError = scriptSyntaxError(source);
+  if (syntaxError) {
+    return { ok: false, error: withScriptHint(`SyntaxError: ${syntaxError}`) };
   }
 
   const tab = await activeWebTab();
