@@ -12,6 +12,7 @@ import {
   isPromptLanguage,
   promptLanguageStorageKey,
   promptModelSettingsFor,
+  resetPromptSession,
   type PromptLanguage,
 } from '@/lib/prompt-model';
 import { DirectChatTransport } from 'ai';
@@ -261,10 +262,12 @@ function SidePanelChat({
     if (busy) {
       void stop();
     }
+    resetPromptSession(model);
     setMessages([]);
     clearError();
     recoveredFor.current.clear();
     setRecoveredRun(null);
+    setTimeout(() => clearError(), 0);
   }
 
   function onDownload() {

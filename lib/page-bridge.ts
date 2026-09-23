@@ -1,5 +1,12 @@
 const MAX_SCRIPT_CHARS = 6_000;
 
+function withScriptHint(error: string): string {
+  if (/null \(setting ['"]value['"]\)|setting ['"]value['"]/i.test(error)) {
+    return `${error} Countermeasure: querySelector returned null, so there is no element to assign. Call inspectSelector with a selector copied from getPageInfo. Assign value only after the element is not null, then dispatch bubbling input and change events. Do not write querySelector(...).value = ....`;
+  }
+  return `${error} Countermeasure: change the selector or the DOM operation, confirm the selector with inspectSelector, and run the script again.`;
+}
+
 type PageElement = {
   tag: string;
   type: string;
@@ -35,6 +42,27 @@ type ScriptExecution = {
 };
 
 function readPageSnapshot(hint: string) {
+  function cssPath(element: Element): string {
+    const parts: string[] = [];
+    let current: Element | null = element;
+    while (current && current !== document.body && parts.length < 5) {
+      if (current.id) {
+        parts.unshift(`#${CSS.escape(current.id)}`);
+        break;
+      }
+      const tagName = current.tagName;
+      const tag = tagName.toLowerCase();
+      const parent: Element | null = current.parentElement;
+      const same = parent
+        ? [...parent.children].filter((child) => child.tagName === tagName)
+        : [];
+      const nth = same.length > 1 ? `:nth-of-type(${same.indexOf(current) + 1})` : '';
+      parts.unshift(`${tag}${nth}`);
+      current = parent;
+    }
+    return parts.join(' > ');
+  }
+
   function describe(element: Element) {
     const tag = element.tagName.toLowerCase();
     const type = element.getAttribute('type') ?? '';
@@ -57,6 +85,9 @@ function readPageSnapshot(hint: string) {
       selector = `${tag}[aria-label="${CSS.escape(element.getAttribute('aria-label') ?? '')}"]`;
     } else if (element.getAttribute('placeholder')) {
       selector = `${tag}[placeholder="${CSS.escape(element.getAttribute('placeholder') ?? '')}"]`;
+    }
+    if (!selector) {
+      selector = cssPath(element);
     }
     return { tag, type, role, name, text, selector };
   }
@@ -220,7 +251,7 @@ export async function executePageScript(
       error: `The page script exceeds ${MAX_SCRIPT_CHARS} characters.`,
     };
   }
-    if (!await userScriptsAvailable()) {
+  if (!(await userScriptsAvailable())) {
     return {
       ok: false,
       error:
@@ -234,10 +265,18 @@ export async function executePageScript(
   }
 
   const wrapped = `(() => {
-    const value = (() => {
-      ${source}
-    })();
-    return JSON.parse(JSON.stringify(value ?? null));
+    try {
+      const value = (() => {
+        ${source}
+      })();
+      try {
+        return { ok: true, result: JSON.parse(JSON.stringify(value ?? null)) };
+      } catch {
+        return { ok: false, error: 'The script result could not be serialized.' };
+      }
+    } catch (cause) {
+      return { ok: false, error: cause instanceof Error ? cause.message : String(cause) };
+    }
   })()`;
 
   try {
@@ -251,9 +290,31 @@ export async function executePageScript(
       return { ok: false, error: 'The page script returned no result.' };
     }
     if (injected.error) {
-      return { ok: false, error: injected.error };
+      return { ok: false, error: withScriptHint(injected.error) };
     }
-    return { ok: true, result: injected.result };
+    const outcome = injected.result;
+    if (
+      outcome &&
+      typeof outcome === 'object' &&
+      'ok' in outcome &&
+      outcome.ok === false
+    ) {
+      const error =
+        'error' in outcome && typeof outcome.error === 'string'
+          ? outcome.error
+          : 'The page script failed.';
+      return { ok: false, error: withScriptHint(error) };
+    }
+    if (
+      outcome &&
+      typeof outcome === 'object' &&
+      'ok' in outcome &&
+      outcome.ok === true &&
+      'result' in outcome
+    ) {
+      return { ok: true, result: outcome.result };
+    }
+    return { ok: true, result: outcome ?? null };
   } catch (cause) {
     return {
       ok: false,

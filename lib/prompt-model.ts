@@ -48,6 +48,15 @@ export function createPromptModel(language: PromptLanguage) {
   return browserAI('text', promptModelSettingsFor(language));
 }
 
+export function resetPromptSession(model: ReturnType<typeof createPromptModel>) {
+  const sessionManager = (
+    model as unknown as {
+      sessionManager?: { destroySession?: () => void };
+    }
+  ).sessionManager;
+  sessionManager?.destroySession?.();
+}
+
 export async function preparePromptModel(
   model?: ReturnType<typeof createPromptModel>,
   onDownloadProgress?: (progress: number) => void,

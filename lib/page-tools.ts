@@ -28,7 +28,7 @@ export const pageTools = {
   }),
   executePageScript: tool({
     description:
-      'Runs the code argument in the active tab and returns the result. Calling this tool performs the action. It is not a code generator. Use it for every page change, including when the user asks to run a script you already wrote. The code is a function body: it may use document.querySelector and DOM APIs, must return a JSON-serializable value, and must not be wrapped in a function declaration.',
+      'Runs the code argument in the active tab and returns the result. Calling this tool performs the action. It is not a code generator. If the result is ok: false, apply the countermeasure in the error, then call this tool again. Do not assign .value on the result of querySelector. Confirm the element exists, set the value through its prototype setter when present, and dispatch input and change events. The code is a function body and must return a JSON-serializable value.',
     inputSchema: z.object({
       code: z
         .string()
