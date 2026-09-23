@@ -3,11 +3,11 @@ export default function App() {
 
   return (
     <main>
-      <h1>Prompt API Agent</h1>
+      <h1>{browser.i18n.getMessage('extName')}</h1>
       <p>
-        {supported
-          ? 'このブラウザでは Prompt API を使えます。'
-          : 'このブラウザでは Prompt API を使えません。'}
+        {browser.i18n.getMessage(
+          supported ? 'promptApiAvailable' : 'promptApiUnavailable',
+        )}
       </p>
     </main>
   );

@@ -1,0 +1,22 @@
+{
+  "extName": {
+    "message": "Prompt API Agent",
+    "description": "Extension name shown in the toolbar, side panel title, and heading."
+  },
+  "extDescription": {
+    "message": "Prompt API Agent Browser Extension",
+    "description": "Extension description shown in the browser's extension management page."
+  },
+  "promptApiAvailable": {
+    "message": "Prompt API is available in this browser.",
+    "description": "Shown in the side panel when LanguageModel exists."
+  },
+  "promptApiUnavailable": {
+    "message": "Prompt API is not available in this browser.",
+    "description": "Shown in the side panel when LanguageModel is missing."
+  },
+  "modelUnavailable": {
+    "message": "The built-in model is not available on this device.",
+    "description": "Error when the built-in Prompt API model cannot be used."
+  }
+}

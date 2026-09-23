@@ -14,7 +14,7 @@ export async function generateWithPromptApi(prompt: string): Promise<string> {
   const availability = await model.availability();
 
   if (availability === 'unavailable') {
-    throw new Error('この端末では組み込みモデルを使えません。');
+    throw new Error(browser.i18n.getMessage('modelUnavailable'));
   }
 
   if (availability === 'downloadable' || availability === 'downloading') {

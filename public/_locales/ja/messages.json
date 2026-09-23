@@ -1,0 +1,22 @@
+{
+  "extName": {
+    "message": "Prompt API Agent",
+    "description": "Extension name shown in the toolbar, side panel title, and heading."
+  },
+  "extDescription": {
+    "message": "Prompt API エージェントのブラウザ拡張機能",
+    "description": "Extension description shown in the browser's extension management page."
+  },
+  "promptApiAvailable": {
+    "message": "このブラウザでは Prompt API を使えます。",
+    "description": "Shown in the side panel when LanguageModel exists."
+  },
+  "promptApiUnavailable": {
+    "message": "このブラウザでは Prompt API を使えません。",
+    "description": "Shown in the side panel when LanguageModel is missing."
+  },
+  "modelUnavailable": {
+    "message": "この端末では組み込みモデルを使えません。",
+    "description": "Error when the built-in Prompt API model cannot be used."
+  }
+}
