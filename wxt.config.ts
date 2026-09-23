@@ -7,7 +7,7 @@ export default defineConfig({
     name: '__MSG_extName__',
     description: '__MSG_extDescription__',
     default_locale: 'en',
-    permissions: ['scripting', 'storage', 'tabs', 'userScripts'],
+    permissions: ['scripting', 'storage', 'tabs'],
     host_permissions: ['http://*/*', 'https://*/*'],
     action: {
       default_title: '__MSG_extName__',

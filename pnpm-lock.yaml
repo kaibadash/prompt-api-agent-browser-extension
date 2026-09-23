@@ -14,6 +14,9 @@ importers:
       '@browser-ai/core':
         specifier: ^3.0.3
         version: 3.0.3(ai@7.0.109(zod@4.6.5))
+      '@page-agent/page-controller':
+        specifier: ^1.12.4
+        version: 1.12.4
       ai:
         specifier: ^7.0.109
         version: 7.0.109(zod@4.6.5)
@@ -227,6 +230,9 @@ packages:
 
   '@oxc-project/types@0.150.0':
     resolution: {integrity: sha512-rDS5/31E9HfPl/CIzGrn0DOlvBbXFseQ5URJ9sYMfstbKLD/c6Gm9vmRzRGDdAXyOIL4zmO37lc9RIwYqVruZw==}
+
+  '@page-agent/page-controller@1.12.4':
+    resolution: {integrity: sha512-I8se6/QMhg1wMZp52fkX37xbv/lkUnBihtadcoZKOQ9xvL562/sd141mu5ANPGvaCosPlXxJQ3HGIwA2VM4bwQ==}
 
   '@pinojs/redact@0.4.0':
     resolution: {integrity: sha512-k2ENnmBugE/rzQfEcdWHcCY+/FM3VLzH9cYEsbdsoqrvzAKRhUZeRNhAZvB8OitQJ1TBed3yqWtdjzS6wJKBwg==}
@@ -461,6 +467,9 @@ packages:
   agent-base@7.1.4:
     resolution: {integrity: sha512-MnA+YT8fwfJPgBx3m60MNqakm30XOkyIoH1y6huTQvC0PwZG7ki8NacLBcrPbNoo8vEZy7Jpuk7+jMO+CUovTQ==}
     engines: {node: '>= 14'}
+
+  ai-motion@0.4.8:
+    resolution: {integrity: sha512-9nQVjf8lrYQWSW0sZdb9bES4x8Ei1w9C0S62po2KvRbMjslmjm0WMeszyW771SEauDnu4YGWqurLZ/gCkCTosQ==}
 
   ai@7.0.109:
     resolution: {integrity: sha512-hTnm8K4GIT0R6gHrnDJHr1KRnGVAtFa26mLtjqn/TGy+ufD5Y5XXerTEabLXVgmb9iunWxSFRCPOZUZ/VeXYLQ==}
@@ -2206,6 +2215,10 @@ snapshots:
 
   '@oxc-project/types@0.150.0': {}
 
+  '@page-agent/page-controller@1.12.4':
+    dependencies:
+      ai-motion: 0.4.8
+
   '@pinojs/redact@0.4.0': {}
 
   '@pnpm/config.env-replace@1.1.0': {}
@@ -2392,6 +2405,8 @@ snapshots:
   adm-zip@0.6.1: {}
 
   agent-base@7.1.4: {}
+
+  ai-motion@0.4.8: {}
 
   ai@7.0.109(zod@4.6.5):
     dependencies:

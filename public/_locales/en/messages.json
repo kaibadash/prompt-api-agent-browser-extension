@@ -85,31 +85,25 @@
     "message": "Assistant",
     "description": "Label for a message sent by the assistant."
   },
-  "toolGetPageInfo": {
+  "toolGetBrowserState": {
     "message": "Reading the page…",
-    "description": "Shown while the agent reads the active page."
+    "description": "Shown while the agent reads interactive elements on the active page."
   },
-  "toolInspectSelector": {
-    "message": "Checking the selector…",
-    "description": "Shown while the agent checks a generated CSS selector."
+  "toolClickElement": {
+    "message": "Clicking…",
+    "description": "Shown while the agent clicks an element on the active page."
   },
-  "toolExecutePageScript": {
-    "message": "Running the page script…",
-    "description": "Shown while the extension runs the JavaScript generated for the page."
+  "toolInputText": {
+    "message": "Typing…",
+    "description": "Shown while the agent types into an element on the active page."
   },
-  "toolScriptResult": {
-    "message": "Page script result: $RESULT$",
-    "description": "Shown after the extension runs a script the model printed instead of calling the execution tool. RESULT is the JSON result.",
-    "placeholders": {
-      "result": {
-        "content": "$1",
-        "example": "null"
-      }
-    }
+  "toolSelectOption": {
+    "message": "Choosing an option…",
+    "description": "Shown while the agent selects an option on the active page."
   },
-  "userScriptsUnavailable": {
-    "message": "To run generated page scripts, open chrome://extensions, open this extension's details, and turn on Allow User Scripts.",
-    "description": "Shown when the userScripts API is not enabled, so generated JavaScript cannot run."
+  "toolScroll": {
+    "message": "Scrolling…",
+    "description": "Shown while the agent scrolls the active page."
   },
   "openOptions": {
     "message": "Settings",

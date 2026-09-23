@@ -1,41 +1,59 @@
-import { executePageScript, getPageInfo, inspectSelector } from '@/lib/page-bridge';
+import { clickElement, getBrowserState, inputText, scrollPage, selectOption } from '@/lib/page-bridge';
 import { tool } from 'ai';
 import { z } from 'zod';
 
+const indexSchema = z
+  .number()
+  .int()
+  .nonnegative()
+  .describe('Index copied from the latest getBrowserState result, written there as [index].');
+
 export const pageTools = {
-  getPageInfo: tool({
+  getBrowserState: tool({
     description:
-      'Read the active http(s) tab. Returns the title, URL, visible text, and interactive elements with CSS selectors. Call this before generating selectors or page scripts.',
-    inputSchema: z.object({
-      hint: z
-        .string()
-        .describe(
-          'What the user wants to find or change. Used to focus the elements that are returned.',
-        )
-        .optional(),
-    }),
-    execute: async ({ hint }) => getPageInfo(hint ?? ''),
+      'Read the active http(s) tab. Returns the URL, title, and a page string. Interactive elements appear as [index]. Call this before choosing an index and again after the page changes. Indexes from an older result are stale.',
+    inputSchema: z.object({}),
+    execute: async () => getBrowserState(),
   }),
-  inspectSelector: tool({
+  clickElement: tool({
     description:
-      'Check a CSS selector you generated against the active page. Returns how many elements match and a short description of the first matches.',
+      'Click the element whose [index] comes from the latest getBrowserState result. Does not take a CSS selector or JavaScript.',
     inputSchema: z.object({
-      selector: z
-        .string()
-        .describe('CSS selector generated for the element to operate on.'),
+      index: indexSchema,
     }),
-    execute: async ({ selector }) => inspectSelector(selector),
+    execute: async ({ index }) => clickElement(index),
   }),
-  executePageScript: tool({
+  inputText: tool({
     description:
-      'Runs the code argument in the active tab and returns the result. Calling this tool performs the action. It is not a code generator. If the result is ok: false, apply the countermeasure in the error, then call this tool again. Do not assign .value on the result of querySelector. Confirm the element exists, set the value through its prototype setter when present, and dispatch input and change events. The code is a function body and must return a JSON-serializable value.',
+      'Replace the value of the input, textarea, or contenteditable element at this index. The index comes from the latest getBrowserState result.',
     inputSchema: z.object({
-      code: z
-        .string()
-        .describe(
-          'JavaScript function body that performs the requested page operation and returns a JSON-serializable result.',
-        ),
+      index: indexSchema,
+      text: z.string().describe('The full text to put in the field.'),
     }),
-    execute: async ({ code }) => executePageScript(code),
+    execute: async ({ index, text }) => inputText(index, text),
+  }),
+  selectOption: tool({
+    description:
+      'Select the option with this visible text in the select element at this index. The index comes from the latest getBrowserState result.',
+    inputSchema: z.object({
+      index: indexSchema,
+      optionText: z.string().describe('Visible text of the option to select.'),
+    }),
+    execute: async ({ index, optionText }) => selectOption(index, optionText),
+  }),
+  scroll: tool({
+    description:
+      'Scroll vertically to reveal elements outside the viewport, then call getBrowserState again. Pass index to scroll that element\'s container.',
+    inputSchema: z.object({
+      down: z.boolean().describe('True scrolls down. False scrolls up.'),
+      numPages: z
+        .number()
+        .positive()
+        .describe('How many viewport heights to scroll. Values above 5 are clamped.'),
+      index: indexSchema
+        .optional()
+        .describe('Scroll the container of this element instead of the page.'),
+    }),
+    execute: async ({ down, numPages, index }) => scrollPage({ down, numPages, index }),
   }),
 };

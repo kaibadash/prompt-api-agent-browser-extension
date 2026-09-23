@@ -85,31 +85,25 @@
     "message": "アシスタント",
     "description": "Label for a message sent by the assistant."
   },
-  "toolGetPageInfo": {
-    "message": "ページを読んでいます…",
-    "description": "Shown while the agent reads the active page."
+  "toolGetBrowserState": {
+    "message": "ページの操作対象を読んでいます…",
+    "description": "Shown while the agent reads interactive elements on the active page."
   },
-  "toolInspectSelector": {
-    "message": "セレクタを確認しています…",
-    "description": "Shown while the agent checks a generated CSS selector."
+  "toolClickElement": {
+    "message": "クリックしています…",
+    "description": "Shown while the agent clicks an element on the active page."
   },
-  "toolExecutePageScript": {
-    "message": "ページのスクリプトを実行しています…",
-    "description": "Shown while the extension runs the JavaScript generated for the page."
+  "toolInputText": {
+    "message": "入力しています…",
+    "description": "Shown while the agent types into an element on the active page."
   },
-  "toolScriptResult": {
-    "message": "ページスクリプトの結果: $RESULT$",
-    "description": "Shown after the extension runs a script the model printed instead of calling the execution tool. RESULT is the JSON result.",
-    "placeholders": {
-      "result": {
-        "content": "$1",
-        "example": "null"
-      }
-    }
+  "toolSelectOption": {
+    "message": "選択肢を選んでいます…",
+    "description": "Shown while the agent selects an option on the active page."
   },
-  "userScriptsUnavailable": {
-    "message": "生成したページ操作スクリプトを実行するには、chrome://extensions でこの拡張機能の詳細を開き、「ユーザースクリプトを許可」をオンにしてください。",
-    "description": "Shown when the userScripts API is not enabled, so generated JavaScript cannot run."
+  "toolScroll": {
+    "message": "スクロールしています…",
+    "description": "Shown while the agent scrolls the active page."
   },
   "openOptions": {
     "message": "設定",

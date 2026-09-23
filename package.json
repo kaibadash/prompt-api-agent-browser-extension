@@ -13,11 +13,13 @@
     "zip": "wxt zip",
     "zip:firefox": "wxt zip -b firefox",
     "compile": "tsc --noEmit",
+    "test": "node --test lib/page-command.test.ts",
     "postinstall": "wxt prepare"
   },
   "dependencies": {
     "@ai-sdk/react": "^4.0.112",
     "@browser-ai/core": "^3.0.3",
+    "@page-agent/page-controller": "^1.12.4",
     "ai": "^7.0.109",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
