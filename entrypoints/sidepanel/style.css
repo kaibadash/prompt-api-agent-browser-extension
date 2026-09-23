@@ -28,7 +28,17 @@ main {
 }
 
 header {
+  display: flex;
+  flex-direction: column;
   padding: 16px 16px 0;
+}
+
+button.options {
+  align-self: flex-end;
+  padding: 0;
+  background: transparent;
+  color: #3b5bfd;
+  font-weight: 500;
 }
 
 header p,
@@ -84,8 +94,12 @@ header p,
   color: #ffffff;
 }
 
-.pending {
+.message p.tool {
   margin: 0;
+  padding: 0;
+  background: transparent;
+  color: #666;
+  font-size: 0.8rem;
 }
 
 .error {
@@ -152,11 +166,13 @@ button:disabled {
   .empty,
   .pending,
   .setup,
-  .message span {
+  .message span,
+  .message p.tool {
     color: #aaa;
   }
 
-  .setup a {
+  .setup a,
+  button.options {
     color: #9db0ff;
   }
 

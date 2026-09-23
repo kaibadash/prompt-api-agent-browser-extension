@@ -1,6 +1,16 @@
 import { useChat } from '@ai-sdk/react';
-import { createPromptModel } from '@/lib/prompt-model';
-import { DirectChatTransport, ToolLoopAgent, type UIMessage } from 'ai';
+import { createPageAgent } from '@/lib/page-agent';
+import { userScriptsAvailable } from '@/lib/page-bridge';
+import {
+  browserPromptLanguage,
+  createPromptModel,
+  getPromptLanguage,
+  isPromptLanguage,
+  promptLanguageStorageKey,
+  promptModelSettingsFor,
+  type PromptLanguage,
+} from '@/lib/prompt-model';
+import { DirectChatTransport } from 'ai';
 import {
   useEffect,
   useMemo,
@@ -43,10 +53,18 @@ function PromptApiSetup() {
   );
 }
 
-function textOf(message: UIMessage): string {
-  return message.parts
-    .flatMap((part) => (part.type === 'text' ? [part.text] : []))
-    .join('');
+function toolStatusLabel(type: string): string | null {
+  const name = type.startsWith('tool-') ? type.slice('tool-'.length) : '';
+  if (name === 'getPageInfo') {
+    return browser.i18n.getMessage('toolGetPageInfo');
+  }
+  if (name === 'inspectSelector') {
+    return browser.i18n.getMessage('toolInspectSelector');
+  }
+  if (name === 'executePageScript') {
+    return browser.i18n.getMessage('toolExecutePageScript');
+  }
+  return null;
 }
 
 function downloadPercent(progress: number): number {
@@ -54,17 +72,10 @@ function downloadPercent(progress: number): number {
   return Math.max(0, Math.min(100, Math.round(value)));
 }
 
-export default function App() {
-  const model = useMemo(() => createPromptModel(), []);
+function SidePanelChat({ language }: { language: PromptLanguage }) {
+  const model = useMemo(() => createPromptModel(language), [language]);
   const transport = useMemo(
-    () =>
-      new DirectChatTransport({
-        agent: new ToolLoopAgent({
-          model,
-          instructions:
-            'You are a helpful assistant in a browser side panel. Reply in the same language the user writes in.',
-        }),
-      }),
+    () => new DirectChatTransport({ agent: createPageAgent(model) }),
     [model],
   );
   const { messages, sendMessage, status, error, stop } = useChat({ transport });
@@ -73,11 +84,24 @@ export default function App() {
       ? { status: 'unsupported' }
       : { status: 'preparing' },
   );
+  const [scriptsReady, setScriptsReady] = useState(true);
   const [input, setInput] = useState('');
   const transcriptEnd = useRef<HTMLDivElement>(null);
   const ignoreImeEnterUntil = useRef(0);
   const busy = status === 'submitted' || status === 'streaming';
   const canSend = phase.status === 'ready' && input.trim().length > 0 && !busy;
+
+  useEffect(() => {
+    let cancelled = false;
+    void userScriptsAvailable().then((available) => {
+      if (!cancelled) {
+        setScriptsReady(available);
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     if (typeof LanguageModel === 'undefined') {
@@ -123,6 +147,7 @@ export default function App() {
   function onDownload() {
     setPhase({ status: 'downloading', progress: 0 });
     void LanguageModel.create({
+      ...promptModelSettingsFor(language),
       monitor(monitor) {
         monitor.addEventListener('downloadprogress', (event) => {
           if (event.lengthComputable && event.total > 0) {
@@ -199,7 +224,17 @@ export default function App() {
   return (
     <main>
       <header>
+        <button
+          type="button"
+          className="options"
+          onClick={() => void browser.runtime.openOptionsPage()}
+        >
+          {browser.i18n.getMessage('openOptions')}
+        </button>
         {statusMessage ? <p>{statusMessage}</p> : null}
+        {scriptsReady ? null : (
+          <p>{browser.i18n.getMessage('userScriptsUnavailable')}</p>
+        )}
       </header>
       <div className="transcript" aria-live="polite">
         {needsSetup ? <PromptApiSetup /> : null}
@@ -213,7 +248,17 @@ export default function App() {
                 message.role === 'user' ? 'chatRoleUser' : 'chatRoleAssistant',
               )}
             </span>
-            <p>{textOf(message)}</p>
+            {message.parts.map((part, index) => {
+              if (part.type === 'text') {
+                return <p key={index}>{part.text}</p>;
+              }
+              const label = toolStatusLabel(part.type);
+              return label ? (
+                <p key={index} className="tool">
+                  {label}
+                </p>
+              ) : null;
+            })}
           </article>
         ))}
         {status === 'submitted' ? (
@@ -254,4 +299,47 @@ export default function App() {
       ) : null}
     </main>
   );
+}
+
+export default function App() {
+  const [language, setLanguage] = useState<PromptLanguage | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    void getPromptLanguage().then((value) => {
+      if (!cancelled) {
+        setLanguage(value);
+      }
+    });
+
+    const onChanged: Parameters<typeof browser.storage.onChanged.addListener>[0] = (
+      changes,
+      areaName,
+    ) => {
+      if (areaName !== 'local' || !changes[promptLanguageStorageKey]) {
+        return;
+      }
+      const next = changes[promptLanguageStorageKey].newValue;
+      if (!cancelled) {
+        setLanguage(isPromptLanguage(next) ? next : browserPromptLanguage());
+      }
+    };
+    browser.storage.onChanged.addListener(onChanged);
+    return () => {
+      cancelled = true;
+      browser.storage.onChanged.removeListener(onChanged);
+    };
+  }, []);
+
+  if (!language) {
+    return (
+      <main>
+        <header>
+          <p>{browser.i18n.getMessage('modelPreparing')}</p>
+        </header>
+      </main>
+    );
+  }
+
+  return <SidePanelChat key={language} language={language} />;
 }

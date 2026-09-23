@@ -80,5 +80,57 @@
   "chatRoleAssistant": {
     "message": "アシスタント",
     "description": "Label for a message sent by the assistant."
+  },
+  "toolGetPageInfo": {
+    "message": "ページを読んでいます…",
+    "description": "Shown while the agent reads the active page."
+  },
+  "toolInspectSelector": {
+    "message": "セレクタを確認しています…",
+    "description": "Shown while the agent checks a generated CSS selector."
+  },
+  "toolExecutePageScript": {
+    "message": "ページのスクリプトを実行しています…",
+    "description": "Shown while the extension runs the JavaScript generated for the page."
+  },
+  "userScriptsUnavailable": {
+    "message": "生成したページ操作スクリプトを実行するには、chrome://extensions でこの拡張機能の詳細を開き、「ユーザースクリプトを許可」をオンにしてください。",
+    "description": "Shown when the userScripts API is not enabled, so generated JavaScript cannot run."
+  },
+  "openOptions": {
+    "message": "設定",
+    "description": "Button in the side panel that opens the extension settings page."
+  },
+  "optionsTitle": {
+    "message": "設定",
+    "description": "Heading of the extension settings page."
+  },
+  "optionsLanguageLabel": {
+    "message": "モデルの言語",
+    "description": "Label for the Prompt API language selector."
+  },
+  "optionsLanguageHint": {
+    "message": "組み込みモデルの入力と出力に使う言語です。未選択のときはブラウザの言語設定に従います。",
+    "description": "Explains the model language setting and that the default follows the browser language."
+  },
+  "languageDe": {
+    "message": "Deutsch",
+    "description": "Language option for German."
+  },
+  "languageEn": {
+    "message": "English",
+    "description": "Language option for English."
+  },
+  "languageEs": {
+    "message": "Español",
+    "description": "Language option for Spanish."
+  },
+  "languageFr": {
+    "message": "Français",
+    "description": "Language option for French."
+  },
+  "languageJa": {
+    "message": "日本語",
+    "description": "Language option for Japanese."
   }
 }

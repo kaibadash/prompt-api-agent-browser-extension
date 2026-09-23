@@ -80,5 +80,57 @@
   "chatRoleAssistant": {
     "message": "Assistant",
     "description": "Label for a message sent by the assistant."
+  },
+  "toolGetPageInfo": {
+    "message": "Reading the page…",
+    "description": "Shown while the agent reads the active page."
+  },
+  "toolInspectSelector": {
+    "message": "Checking the selector…",
+    "description": "Shown while the agent checks a generated CSS selector."
+  },
+  "toolExecutePageScript": {
+    "message": "Running the page script…",
+    "description": "Shown while the extension runs the JavaScript generated for the page."
+  },
+  "userScriptsUnavailable": {
+    "message": "To run generated page scripts, open chrome://extensions, open this extension's details, and turn on Allow User Scripts.",
+    "description": "Shown when the userScripts API is not enabled, so generated JavaScript cannot run."
+  },
+  "openOptions": {
+    "message": "Settings",
+    "description": "Button in the side panel that opens the extension settings page."
+  },
+  "optionsTitle": {
+    "message": "Settings",
+    "description": "Heading of the extension settings page."
+  },
+  "optionsLanguageLabel": {
+    "message": "Model language",
+    "description": "Label for the Prompt API language selector."
+  },
+  "optionsLanguageHint": {
+    "message": "The built-in model uses this language for input and output. If you have not chosen one, it follows your browser language.",
+    "description": "Explains the model language setting and that the default follows the browser language."
+  },
+  "languageDe": {
+    "message": "Deutsch",
+    "description": "Language option for German."
+  },
+  "languageEn": {
+    "message": "English",
+    "description": "Language option for English."
+  },
+  "languageEs": {
+    "message": "Español",
+    "description": "Language option for Spanish."
+  },
+  "languageFr": {
+    "message": "Français",
+    "description": "Language option for French."
+  },
+  "languageJa": {
+    "message": "日本語",
+    "description": "Language option for Japanese."
   }
 }
