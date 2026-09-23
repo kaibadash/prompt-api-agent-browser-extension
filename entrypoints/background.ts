@@ -22,6 +22,10 @@ export default defineBackground(() => {
     promptApi: supportsPromptApi(),
   });
 
+  if (import.meta.env.CHROME) {
+    void browser.sidePanel.setPanelBehavior({ openPanelOnActionClick: true });
+  }
+
   browser.runtime.onMessage.addListener((message, _sender, sendResponse) => {
     if (!isGenerateTextRequest(message)) {
       return;
