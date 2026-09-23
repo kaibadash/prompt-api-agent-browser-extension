@@ -6,6 +6,115 @@ import {
 
 const contentScriptFile = '/content-scripts/content.js';
 
+type PageElement = {
+  tag: string;
+  type: string;
+  role: string;
+  name: string;
+  text: string;
+  selector: string;
+};
+
+export type PageSnapshot = {
+  ok: true;
+  url: string;
+  title: string;
+  text: string;
+  elements: PageElement[];
+};
+
+function readPageSnapshot(hint: string) {
+  function cssPath(element: Element): string {
+    const parts: string[] = [];
+    let current: Element | null = element;
+    while (current && current !== document.body && parts.length < 5) {
+      if (current.id) {
+        parts.unshift(`#${CSS.escape(current.id)}`);
+        break;
+      }
+      const tagName = current.tagName;
+      const tag = tagName.toLowerCase();
+      const parent: Element | null = current.parentElement;
+      const same = parent
+        ? [...parent.children].filter((child) => child.tagName === tagName)
+        : [];
+      const nth = same.length > 1 ? `:nth-of-type(${same.indexOf(current) + 1})` : '';
+      parts.unshift(`${tag}${nth}`);
+      current = parent;
+    }
+    return parts.join(' > ');
+  }
+
+  function describe(element: Element) {
+    const tag = element.tagName.toLowerCase();
+    const type = element.getAttribute('type') ?? '';
+    const role = element.getAttribute('role') ?? '';
+    const name =
+      element.getAttribute('name') ??
+      element.getAttribute('aria-label') ??
+      element.getAttribute('placeholder') ??
+      '';
+    const text = (element.textContent ?? '')
+      .replace(/\s+/g, ' ')
+      .trim()
+      .slice(0, 140);
+    let selector = '';
+    if (element.id) {
+      selector = `#${CSS.escape(element.id)}`;
+    } else if (element.getAttribute('name')) {
+      selector = `${tag}[name="${CSS.escape(element.getAttribute('name') ?? '')}"]`;
+    } else if (element.getAttribute('aria-label')) {
+      selector = `${tag}[aria-label="${CSS.escape(element.getAttribute('aria-label') ?? '')}"]`;
+    } else if (element.getAttribute('placeholder')) {
+      selector = `${tag}[placeholder="${CSS.escape(element.getAttribute('placeholder') ?? '')}"]`;
+    }
+    if (!selector) {
+      selector = cssPath(element);
+    }
+    return { tag, type, role, name, text, selector };
+  }
+
+  const described: PageElement[] = [];
+  const nodes = document.querySelectorAll(
+    'a, button, input, textarea, select, summary, [role="button"], [role="link"], [role="textbox"], [contenteditable="true"]',
+  );
+  for (const element of nodes) {
+    if (!(element instanceof HTMLElement)) {
+      continue;
+    }
+    if (element.getAttribute('type') === 'hidden') {
+      continue;
+    }
+    const rect = element.getBoundingClientRect();
+    if (rect.width === 0 && rect.height === 0) {
+      continue;
+    }
+    described.push(describe(element));
+    if (described.length >= 80) {
+      break;
+    }
+  }
+
+  const needle = hint.trim().toLowerCase();
+  const focused = needle
+    ? described.filter((item) =>
+        `${item.text} ${item.name} ${item.selector}`.toLowerCase().includes(needle),
+      )
+    : described;
+  const elements = (focused.length > 0 ? focused : described).slice(0, 25);
+  const text = (document.body?.innerText ?? '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, 2_500);
+
+  return {
+    url: location.href,
+    title: document.title,
+    text,
+    elements,
+  };
+}
+
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null;
 }
@@ -97,6 +206,30 @@ export async function sendPageCommand(command: PageCommand): Promise<PageCommand
     return tab;
   }
   return deliver(tab.tabId, command);
+}
+
+export async function getPageInfo(
+  hint = '',
+): Promise<PageSnapshot | { ok: false; error: string }> {
+  const tab = await activeWebTab();
+  if (!('tabId' in tab)) {
+    return tab.ok === false
+      ? tab
+      : { ok: false, error: 'The active tab is not an http(s) page.' };
+  }
+  try {
+    const [injected] = await browser.scripting.executeScript({
+      target: { tabId: tab.tabId },
+      func: readPageSnapshot,
+      args: [hint],
+    });
+    if (!injected?.result) {
+      return { ok: false, error: 'The page returned no snapshot.' };
+    }
+    return { ok: true, ...injected.result };
+  } catch (cause) {
+    return { ok: false, error: errorText(cause) };
+  }
 }
 
 export function getBrowserState(): Promise<PageCommandResult> {

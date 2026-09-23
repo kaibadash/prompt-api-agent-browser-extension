@@ -1,4 +1,11 @@
-import { clickElement, getBrowserState, inputText, scrollPage, selectOption } from '@/lib/page-bridge';
+import {
+  clickElement,
+  getBrowserState,
+  getPageInfo,
+  inputText,
+  scrollPage,
+  selectOption,
+} from '@/lib/page-bridge';
 import { tool } from 'ai';
 import { z } from 'zod';
 
@@ -9,9 +16,20 @@ const indexSchema = z
   .describe('Index copied from the latest getBrowserState result, written there as [index].');
 
 export const pageTools = {
+  getPageInfo: tool({
+    description:
+      'Read the active http(s) tab to answer a question. Returns the title, URL, visible text, and interactive elements. This does not choose an element to click or type into.',
+    inputSchema: z.object({
+      hint: z
+        .string()
+        .describe('What the user wants to find. Used to focus the elements that are returned.')
+        .optional(),
+    }),
+    execute: async ({ hint }) => getPageInfo(hint ?? ''),
+  }),
   getBrowserState: tool({
     description:
-      'Read the active http(s) tab. Returns the URL, title, and a page string. Interactive elements appear as [index]. Call this before choosing an index and again after the page changes. Indexes from an older result are stale.',
+      'List interactive elements on the active http(s) tab as [index], for clickElement, inputText, selectOption, and scroll. Call this before choosing an index and again after the page changes. Indexes from an older result are stale. To read the page, call getPageInfo instead.',
     inputSchema: z.object({}),
     execute: async () => getBrowserState(),
   }),

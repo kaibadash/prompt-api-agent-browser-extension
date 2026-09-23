@@ -85,9 +85,13 @@
     "message": "Assistant",
     "description": "Label for a message sent by the assistant."
   },
-  "toolGetBrowserState": {
+  "toolGetPageInfo": {
     "message": "Reading the page…",
-    "description": "Shown while the agent reads interactive elements on the active page."
+    "description": "Shown while the agent reads the active page to answer a question."
+  },
+  "toolGetBrowserState": {
+    "message": "Finding elements…",
+    "description": "Shown while the agent lists interactive elements it can operate."
   },
   "toolClickElement": {
     "message": "Clicking…",

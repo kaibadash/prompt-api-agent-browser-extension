@@ -85,9 +85,13 @@
     "message": "アシスタント",
     "description": "Label for a message sent by the assistant."
   },
+  "toolGetPageInfo": {
+    "message": "ページを読んでいます…",
+    "description": "Shown while the agent reads the active page to answer a question."
+  },
   "toolGetBrowserState": {
-    "message": "ページの操作対象を読んでいます…",
-    "description": "Shown while the agent reads interactive elements on the active page."
+    "message": "操作対象を探しています…",
+    "description": "Shown while the agent lists interactive elements it can operate."
   },
   "toolClickElement": {
     "message": "クリックしています…",

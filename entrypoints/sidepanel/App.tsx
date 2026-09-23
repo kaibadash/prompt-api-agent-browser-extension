@@ -60,8 +60,10 @@ function PromptApiSetup() {
 function toolStatusLabel(type: string): string | null {
   const name = type.startsWith('tool-') ? type.slice('tool-'.length) : '';
   const key =
-    name === 'getBrowserState'
-      ? 'toolGetBrowserState'
+    name === 'getPageInfo'
+      ? 'toolGetPageInfo'
+      : name === 'getBrowserState'
+        ? 'toolGetBrowserState'
       : name === 'clickElement'
         ? 'toolClickElement'
         : name === 'inputText'
