@@ -1,3 +1,10 @@
-# WXT + React
+# Prompt API Agent
 
-This template should help get you started developing with React in WXT.
+Chrome extension that chats with the built-in Prompt API and operates the active page from the side panel.
+
+## Run
+
+```bash
+pnpm install
+pnpm dev
+```
