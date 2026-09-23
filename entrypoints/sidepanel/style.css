@@ -33,8 +33,13 @@ header {
   padding: 16px 16px 0;
 }
 
+.header-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
 button.options {
-  align-self: flex-end;
   padding: 0;
   background: transparent;
   color: #3b5bfd;

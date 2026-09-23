@@ -69,6 +69,10 @@
     "message": "Send",
     "description": "Button that sends the chat message."
   },
+  "chatClear": {
+    "message": "Clear conversation",
+    "description": "Button that removes the messages in the side panel."
+  },
   "chatStop": {
     "message": "Stop",
     "description": "Button that stops the assistant response."
@@ -93,6 +97,16 @@
     "message": "Running the page script…",
     "description": "Shown while the extension runs the JavaScript generated for the page."
   },
+  "toolScriptResult": {
+    "message": "Page script result: $RESULT$",
+    "description": "Shown after the extension runs a script the model printed instead of calling the execution tool. RESULT is the JSON result.",
+    "placeholders": {
+      "result": {
+        "content": "$1",
+        "example": "null"
+      }
+    }
+  },
   "userScriptsUnavailable": {
     "message": "To run generated page scripts, open chrome://extensions, open this extension's details, and turn on Allow User Scripts.",
     "description": "Shown when the userScripts API is not enabled, so generated JavaScript cannot run."
@@ -112,6 +126,14 @@
   "optionsLanguageHint": {
     "message": "The built-in model uses this language for input and output. If you have not chosen one, it follows your browser language.",
     "description": "Explains the model language setting and that the default follows the browser language."
+  },
+  "optionsInstructionsLabel": {
+    "message": "Default instructions",
+    "description": "Label for the text field where the user sets instructions included in every conversation."
+  },
+  "optionsInstructionsHint": {
+    "message": "These instructions are included in every conversation. Leave this empty to use only the built-in instructions.",
+    "description": "Explains the default instructions field on the settings page."
   },
   "languageDe": {
     "message": "Deutsch",

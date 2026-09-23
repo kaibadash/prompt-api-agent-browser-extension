@@ -36,15 +36,30 @@ label {
   font-weight: 600;
 }
 
-select {
+select,
+textarea {
   margin-top: 8px;
-  min-width: 12rem;
   padding: 8px 10px;
   border: 1px solid #c8c8c8;
   border-radius: 8px;
   font: inherit;
   color: inherit;
   background: transparent;
+}
+
+select {
+  min-width: 12rem;
+}
+
+textarea {
+  display: block;
+  width: 100%;
+  min-height: 8rem;
+  resize: vertical;
+}
+
+.field {
+  margin-top: 24px;
 }
 
 p {
@@ -54,7 +69,8 @@ p {
 }
 
 @media (prefers-color-scheme: dark) {
-  select {
+  select,
+  textarea {
     border-color: #3a3a3a;
   }
 

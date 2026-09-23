@@ -69,6 +69,10 @@
     "message": "送信",
     "description": "Button that sends the chat message."
   },
+  "chatClear": {
+    "message": "会話をクリア",
+    "description": "Button that removes the messages in the side panel."
+  },
   "chatStop": {
     "message": "停止",
     "description": "Button that stops the assistant response."
@@ -93,6 +97,16 @@
     "message": "ページのスクリプトを実行しています…",
     "description": "Shown while the extension runs the JavaScript generated for the page."
   },
+  "toolScriptResult": {
+    "message": "ページスクリプトの結果: $RESULT$",
+    "description": "Shown after the extension runs a script the model printed instead of calling the execution tool. RESULT is the JSON result.",
+    "placeholders": {
+      "result": {
+        "content": "$1",
+        "example": "null"
+      }
+    }
+  },
   "userScriptsUnavailable": {
     "message": "生成したページ操作スクリプトを実行するには、chrome://extensions でこの拡張機能の詳細を開き、「ユーザースクリプトを許可」をオンにしてください。",
     "description": "Shown when the userScripts API is not enabled, so generated JavaScript cannot run."
@@ -112,6 +126,14 @@
   "optionsLanguageHint": {
     "message": "組み込みモデルの入力と出力に使う言語です。未選択のときはブラウザの言語設定に従います。",
     "description": "Explains the model language setting and that the default follows the browser language."
+  },
+  "optionsInstructionsLabel": {
+    "message": "デフォルトの指示",
+    "description": "Label for the text field where the user sets instructions included in every conversation."
+  },
+  "optionsInstructionsHint": {
+    "message": "すべての会話に追加されます。空のときは組み込みの指示だけを使います。",
+    "description": "Explains the default instructions field on the settings page."
   },
   "languageDe": {
     "message": "Deutsch",

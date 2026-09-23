@@ -28,7 +28,7 @@ export const pageTools = {
   }),
   executePageScript: tool({
     description:
-      'Run a JavaScript function body in the active page. The Prompt API cannot execute JavaScript; this tool does. The body may use document.querySelector and DOM APIs, and must return a JSON-serializable value. Do not wrap it in a function declaration.',
+      'Runs the code argument in the active tab and returns the result. Calling this tool performs the action. It is not a code generator. Use it for every page change, including when the user asks to run a script you already wrote. The code is a function body: it may use document.querySelector and DOM APIs, must return a JSON-serializable value, and must not be wrapped in a function declaration.',
     inputSchema: z.object({
       code: z
         .string()

@@ -1,3 +1,4 @@
+import { getDefaultInstructions, setDefaultInstructions } from '@/lib/page-agent';
 import {
   getPromptLanguage,
   isPromptLanguage,
@@ -5,7 +6,7 @@ import {
   supportedPromptLanguages,
   type PromptLanguage,
 } from '@/lib/prompt-model';
-import { useEffect, useState, type ChangeEvent } from 'react';
+import { useEffect, useRef, useState, type ChangeEvent } from 'react';
 
 const languageMessageName = {
   de: 'languageDe',
@@ -17,18 +18,37 @@ const languageMessageName = {
 
 export default function App() {
   const [language, setLanguage] = useState<PromptLanguage | null>(null);
+  const [instructions, setInstructions] = useState<string | null>(null);
+  const savedInstructions = useRef<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
-    void getPromptLanguage().then((value) => {
-      if (!cancelled) {
-        setLanguage(value);
-      }
-    });
+    void Promise.all([getPromptLanguage(), getDefaultInstructions()]).then(
+      ([nextLanguage, nextInstructions]) => {
+        if (!cancelled) {
+          savedInstructions.current = nextInstructions;
+          setLanguage(nextLanguage);
+          setInstructions(nextInstructions);
+        }
+      },
+    );
     return () => {
       cancelled = true;
     };
   }, []);
+
+  useEffect(() => {
+    if (instructions === null || instructions === savedInstructions.current) {
+      return;
+    }
+    const timer = setTimeout(() => {
+      savedInstructions.current = instructions;
+      void setDefaultInstructions(instructions);
+    }, 400);
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [instructions]);
 
   function onLanguageChange(event: ChangeEvent<HTMLSelectElement>) {
     const next = event.target.value;
@@ -58,6 +78,19 @@ export default function App() {
         ))}
       </select>
       <p>{browser.i18n.getMessage('optionsLanguageHint')}</p>
+      <div className="field">
+        <label htmlFor="default-instructions">
+          {browser.i18n.getMessage('optionsInstructionsLabel')}
+        </label>
+        <textarea
+          id="default-instructions"
+          rows={6}
+          value={instructions ?? ''}
+          disabled={instructions === null}
+          onChange={(event) => setInstructions(event.target.value)}
+        />
+        <p>{browser.i18n.getMessage('optionsInstructionsHint')}</p>
+      </div>
     </main>
   );
 }
