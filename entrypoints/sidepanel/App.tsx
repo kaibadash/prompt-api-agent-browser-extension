@@ -8,15 +8,40 @@ import {
   useState,
   type FormEvent,
   type KeyboardEvent,
+  type MouseEvent,
 } from 'react';
+
+const PROMPT_API_SETUP_URL = 'https://kaibadash.github.io/prompt-api-example/';
 
 type Phase =
   | { status: 'unsupported' }
+  | { status: 'unavailable' }
   | { status: 'preparing' }
   | { status: 'needs-download' }
   | { status: 'downloading'; progress: number }
   | { status: 'ready' }
   | { status: 'error'; message: string };
+
+function openPromptApiSetup(event: MouseEvent<HTMLAnchorElement>) {
+  event.preventDefault();
+  void browser.tabs.create({ url: event.currentTarget.href });
+}
+
+function PromptApiSetup() {
+  return (
+    <p className="setup">
+      {browser.i18n.getMessage('promptApiSetupHint')}{' '}
+      <a
+        href={PROMPT_API_SETUP_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={openPromptApiSetup}
+      >
+        {browser.i18n.getMessage('promptApiSetupAction')}
+      </a>
+    </p>
+  );
+}
 
 function textOf(message: UIMessage): string {
   return message.parts
@@ -68,10 +93,7 @@ export default function App() {
           return;
         }
         if (availability === 'unavailable') {
-          setPhase({
-            status: 'error',
-            message: browser.i18n.getMessage('modelUnavailable'),
-          });
+          setPhase({ status: 'unavailable' });
           return;
         }
         if (availability === 'available') {
@@ -152,10 +174,16 @@ export default function App() {
     }
   }
 
+  const needsSetup =
+    phase.status === 'unsupported' ||
+    phase.status === 'unavailable' ||
+    phase.status === 'error';
   const statusMessage =
     phase.status === 'unsupported'
       ? browser.i18n.getMessage('promptApiUnavailable')
-      : phase.status === 'preparing'
+      : phase.status === 'unavailable'
+        ? browser.i18n.getMessage('modelUnavailable')
+        : phase.status === 'preparing'
         ? browser.i18n.getMessage('modelPreparing')
         : phase.status === 'needs-download'
           ? browser.i18n.getMessage('modelDownloadNeeded')
@@ -174,6 +202,7 @@ export default function App() {
         {statusMessage ? <p>{statusMessage}</p> : null}
       </header>
       <div className="transcript" aria-live="polite">
+        {needsSetup ? <PromptApiSetup /> : null}
         {messages.length === 0 && phase.status === 'ready' ? (
           <p className="empty">{browser.i18n.getMessage('chatEmpty')}</p>
         ) : null}
@@ -193,7 +222,7 @@ export default function App() {
         {error ? <p className="error">{error.message}</p> : null}
         <div ref={transcriptEnd} />
       </div>
-      {phase.status !== 'unsupported' ? (
+      {phase.status !== 'unsupported' && phase.status !== 'unavailable' ? (
         <form className="composer" onSubmit={onSubmit}>
           <label className="sr-only" htmlFor="message">
             {browser.i18n.getMessage('chatInputLabel')}

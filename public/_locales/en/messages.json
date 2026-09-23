@@ -19,6 +19,14 @@
     "message": "The built-in model is not available on this device.",
     "description": "Error when the built-in Prompt API model cannot be used."
   },
+  "promptApiSetupHint": {
+    "message": "Check whether Prompt API is available and complete setup on this page.",
+    "description": "Shown when Prompt API cannot be used. Followed by a link to the setup page."
+  },
+  "promptApiSetupAction": {
+    "message": "Open the Prompt API setup page",
+    "description": "Link label for https://kaibadash.github.io/prompt-api-example/, where the user checks and configures Prompt API."
+  },
   "modelPreparing": {
     "message": "Preparing the built-in model…",
     "description": "Shown while the side panel checks whether the built-in model is ready."
