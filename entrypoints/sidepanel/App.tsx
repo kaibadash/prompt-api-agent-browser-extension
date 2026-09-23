@@ -171,7 +171,6 @@ export default function App() {
   return (
     <main>
       <header>
-        <h1>{browser.i18n.getMessage('extName')}</h1>
         {statusMessage ? <p>{statusMessage}</p> : null}
       </header>
       <div className="transcript" aria-live="polite">
