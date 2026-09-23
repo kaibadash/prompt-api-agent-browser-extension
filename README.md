@@ -8,3 +8,7 @@ Chrome extension that chats with the built-in Prompt API and operates the active
 pnpm install
 pnpm dev
 ```
+
+## License
+
+[MIT](LICENSE)
