@@ -9,8 +9,10 @@ export function createPromptModel() {
   return browserAI();
 }
 
-export async function generateWithPromptApi(prompt: string): Promise<string> {
-  const model = createPromptModel();
+export async function preparePromptModel(
+  model = createPromptModel(),
+  onDownloadProgress?: (progress: number) => void,
+) {
   const availability = await model.availability();
 
   if (availability === 'unavailable') {
@@ -18,9 +20,14 @@ export async function generateWithPromptApi(prompt: string): Promise<string> {
   }
 
   if (availability === 'downloadable' || availability === 'downloading') {
-    await model.createSessionWithProgress();
+    await model.createSessionWithProgress(onDownloadProgress);
   }
 
+  return model;
+}
+
+export async function generateWithPromptApi(prompt: string): Promise<string> {
+  const model = await preparePromptModel();
   const { text } = await generateText({ model, prompt });
   return text;
 }

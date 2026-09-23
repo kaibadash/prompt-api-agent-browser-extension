@@ -18,5 +18,59 @@
   "modelUnavailable": {
     "message": "The built-in model is not available on this device.",
     "description": "Error when the built-in Prompt API model cannot be used."
+  },
+  "modelPreparing": {
+    "message": "Preparing the built-in model…",
+    "description": "Shown while the side panel checks whether the built-in model is ready."
+  },
+  "modelDownloading": {
+    "message": "Downloading the built-in model… $PROGRESS$%",
+    "description": "Shown while the built-in model is downloading. PROGRESS is an integer from 0 to 100.",
+    "placeholders": {
+      "progress": {
+        "content": "$1",
+        "example": "42"
+      }
+    }
+  },
+  "modelDownloadNeeded": {
+    "message": "Download the built-in model to start chatting.",
+    "description": "Shown when the built-in model is not downloaded yet."
+  },
+  "modelDownloadAction": {
+    "message": "Download model",
+    "description": "Button that starts downloading the built-in model. The click is required because the browser only allows the download from a user action."
+  },
+  "chatEmpty": {
+    "message": "Send a message to start the conversation.",
+    "description": "Shown in the side panel before the first message."
+  },
+  "chatPending": {
+    "message": "Thinking…",
+    "description": "Shown while waiting for the assistant's first token."
+  },
+  "chatInputLabel": {
+    "message": "Message",
+    "description": "Accessible name for the chat text field."
+  },
+  "chatPlaceholder": {
+    "message": "Send a message",
+    "description": "Placeholder text in the chat text field."
+  },
+  "chatSend": {
+    "message": "Send",
+    "description": "Button that sends the chat message."
+  },
+  "chatStop": {
+    "message": "Stop",
+    "description": "Button that stops the assistant response."
+  },
+  "chatRoleUser": {
+    "message": "You",
+    "description": "Label for a message sent by the user."
+  },
+  "chatRoleAssistant": {
+    "message": "Assistant",
+    "description": "Label for a message sent by the assistant."
   }
 }

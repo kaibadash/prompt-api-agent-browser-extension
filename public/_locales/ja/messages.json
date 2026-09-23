@@ -18,5 +18,59 @@
   "modelUnavailable": {
     "message": "この端末では組み込みモデルを使えません。",
     "description": "Error when the built-in Prompt API model cannot be used."
+  },
+  "modelPreparing": {
+    "message": "組み込みモデルを準備しています…",
+    "description": "Shown while the side panel checks whether the built-in model is ready."
+  },
+  "modelDownloading": {
+    "message": "組み込みモデルをダウンロードしています… $PROGRESS$%",
+    "description": "Shown while the built-in model is downloading. PROGRESS is an integer from 0 to 100.",
+    "placeholders": {
+      "progress": {
+        "content": "$1",
+        "example": "42"
+      }
+    }
+  },
+  "modelDownloadNeeded": {
+    "message": "会話を始めるには、組み込みモデルをダウンロードしてください。",
+    "description": "Shown when the built-in model is not downloaded yet."
+  },
+  "modelDownloadAction": {
+    "message": "モデルをダウンロード",
+    "description": "Button that starts downloading the built-in model. The click is required because the browser only allows the download from a user action."
+  },
+  "chatEmpty": {
+    "message": "メッセージを送ると会話が始まります。",
+    "description": "Shown in the side panel before the first message."
+  },
+  "chatPending": {
+    "message": "考えています…",
+    "description": "Shown while waiting for the assistant's first token."
+  },
+  "chatInputLabel": {
+    "message": "メッセージ",
+    "description": "Accessible name for the chat text field."
+  },
+  "chatPlaceholder": {
+    "message": "メッセージを入力",
+    "description": "Placeholder text in the chat text field."
+  },
+  "chatSend": {
+    "message": "送信",
+    "description": "Button that sends the chat message."
+  },
+  "chatStop": {
+    "message": "停止",
+    "description": "Button that stops the assistant response."
+  },
+  "chatRoleUser": {
+    "message": "あなた",
+    "description": "Label for a message sent by the user."
+  },
+  "chatRoleAssistant": {
+    "message": "アシスタント",
+    "description": "Label for a message sent by the assistant."
   }
 }
